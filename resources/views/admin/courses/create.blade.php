@@ -174,16 +174,6 @@
                 <p class="text-[#7F8190]">Provide high quality for best students</p>
             </div>
 
-            @if ($errors->any())
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li class="py-5 px-5 bg-red-700 text-white">
-                            {{ $error }}
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-
             <form method="POST" enctype="multipart/form-data" action="{{ route('dashboard.courses.store') }}"
                 class="flex flex-col gap-[30px] w-[500px] mx-[70px] mt-10">
                 @csrf
