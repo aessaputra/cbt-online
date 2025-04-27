@@ -44,9 +44,9 @@ Route::middleware('auth')->group(function () {
     // featuring several classes assigned by the teacher
     Route::get('/learning', [LearningController::class, 'index'])->middleware('role:student')->name('learning.index');
 
-    Route::get('/learning{course}/{question}', [LearningController::class, 'learning'])->middleware('role:student')->name('learning.course');
+    Route::get('/learning/{course}/{question}', [LearningController::class, 'learning'])->middleware('role:student')->name('learning.course');
 
-    Route::post('/learning{course}/{question}', [StudentAnswerController::class, 'store'])->middleware('role:student')->name('learning.course.answer.store');
+    Route::post('/learning/{course}/{question}', [StudentAnswerController::class, 'store'])->middleware('role:student')->name('learning.course.answer.store');
   });
 });
 
