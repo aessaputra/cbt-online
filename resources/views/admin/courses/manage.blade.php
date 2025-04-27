@@ -305,7 +305,7 @@
                                 </p>
                             </div>
                             <div class="flex items-center gap-[14px]">
-                                <a href="#"
+                                <a href="{{ route('dashboard.course_questions.edit', $question) }}"
                                     class="bg-[#0A090B] p-[14px_30px] rounded-full text-white font-semibold">Edit</a>
                                 <form action="">
                                     <button
