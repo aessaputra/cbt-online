@@ -31,11 +31,11 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('course_questions', CourseQuestionController::class)->middleware('role:teacher');
 
-    Route::get('course/students/show{course}', [CourseStudentController::class, 'index'])->middleware('role:teacher')->name('course.course_students.index');
+    Route::get('/course/students/show/{course}', [CourseStudentController::class, 'index'])->middleware('role:teacher')->name('course.course_students.index');
 
-    Route::get('/course/students/create{course}', [CourseStudentController::class, 'create'])->middleware('role:teacher')->name('course.course_students.create');
+    Route::get('/course/students/create/{course}', [CourseStudentController::class, 'create'])->middleware('role:teacher')->name('course.course_students.create');
 
-    Route::post('/course/students/save{course}', [CourseStudentController::class, 'store'])->middleware('role:teacher')->name('course.course_students.store');
+    Route::post('/course/students/save/{course}', [CourseStudentController::class, 'store'])->middleware('role:teacher')->name('course.course_students.store');
 
     Route::get('/learning/finished/{course}', [LearningController::class, 'learning_finished'])->middleware('role:student')->name('learning.finished.course');
 
