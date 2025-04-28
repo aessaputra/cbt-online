@@ -34,8 +34,7 @@ class StudentAnswerController extends Controller
    */
   public function store(Request $request, Course $course, $question)
   {
-    $question_detials = CourseQuestion::where('id', $question)->first();
-
+    // Validate the request
     $validated = $request->validate([
       'answer_id' => 'required|exists:course_answers,id',
     ]);
@@ -43,47 +42,57 @@ class StudentAnswerController extends Controller
     DB::beginTransaction();
 
     try {
-      $selectedAnswer = CourseAnswer::find($validated['answer_id']);
+      // Get the question and selected answer
+      $currentQuestion = CourseQuestion::findOrFail($question);
+      $selectedAnswer = CourseAnswer::findOrFail($validated['answer_id']);
 
-      dd($selectedAnswer);
-
-      if ($selectedAnswer->course_question_id) {
-        $error = ValidationException::withMessages([
-          'system_error' => ['System error!' . ['Jawaban tidak tersedia pada pertanyaan!']]
+      // Verify the answer belongs to the question
+      if ($selectedAnswer->course_question_id != $question) {
+        throw ValidationException::withMessages([
+          'answer_id' => 'The selected answer does not belong to this question.'
         ]);
-
-        throw $error;
       }
 
-      $existingAnswer = StudentAnswer::where('user_id', Auth::id())->where('course_question_id', $question)->first();
+      // Check if user already answered this question
+      $existingAnswer = StudentAnswer::where('user_id', Auth::id())
+        ->where('course_question_id', $question)
+        ->first();
 
       if ($existingAnswer) {
-        $error = ValidationException::withMessages([
-          'system_error' => ['System error!' . ['Kamu telah menjawab pertanyaan ini sebelumbya!']]
+        throw ValidationException::withMessages([
+          'system_error' => 'You have already answered this question.'
         ]);
-
-        throw $error;
       }
 
-      $answerValue = $selectedAnswer->is_correct ? 'correct' : 'wrong';
-
+      // Create the student answer
       StudentAnswer::create([
         'user_id' => Auth::id(),
         'course_question_id' => $question,
-        'answer' => $answerValue
+        'answer' => $selectedAnswer->is_correct ? 'correct' : 'wrong'
       ]);
 
       DB::commit();
 
-      
+      // Find the next question
+      $nextQuestion = CourseQuestion::where('course_id', $course->id)
+        ->where('id', '>', $question)
+        ->orderBy('id', 'ASC')
+        ->first();
 
+      if ($nextQuestion) {
+        return redirect()->route('dashboard.learning.course', [
+          'course' => $course->id,
+          'question' => $nextQuestion->id
+        ]);
+      }
+
+      // If no more questions, redirect to finished page
+      return redirect()->route('dashboard.learning.finished.course', $course->id);
     } catch (\Exception $e) {
       DB::rollBack();
-      $error = ValidationException::withMessages([
-        'system_error' => ['System error!' . $e->getMessage()]
+      throw ValidationException::withMessages([
+        'system_error' => 'An error occurred: ' . $e->getMessage()
       ]);
-
-      throw $error;
     }
   }
 
