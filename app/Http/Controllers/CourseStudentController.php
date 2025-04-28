@@ -26,10 +26,10 @@ class CourseStudentController extends Controller
         $query->where('course_id', $course->id);
       })->where('user_id', $student->id)->get();
 
-      $answerCount = $studentAnswers->count();
+      $answersCount = $studentAnswers->count();
       $correctAnswersCount = $studentAnswers->where('answer', 'correct')->count();
 
-      if ($answerCount == 0) {
+      if ($answersCount == 0) {
         $student->status = 'Not Started';
       } elseif ($correctAnswersCount < $totalQuestions) {
         $student->status = 'Not Passed';
@@ -37,6 +37,7 @@ class CourseStudentController extends Controller
         $student->status = 'Passed';
       }
     }
+
 
     return view('admin.students.index', [
       'course' => $course,

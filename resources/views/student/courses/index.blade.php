@@ -225,7 +225,7 @@
                         </div>
                     </div>
                 @empty
-                    <p class="text-center text-[#7F8190]">Tidak ada kelas yang diberikan!</p>
+                    <p class="text-center text-[#7F8190]">belum ada kelas yang diberikan!</p>
                 @endforelse
 
             </div>

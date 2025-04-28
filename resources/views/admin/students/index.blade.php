@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ asset('css/output.css') }}" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
 </head>
@@ -151,7 +152,7 @@
                     <div class="flex gap-3 items-center">
                         <div class="flex flex-col text-right">
                             <p class="text-sm text-[#7F8190]">Howdy</p>
-                            <p class="font-semibold">Fany Alqo</p>
+                            <p class="font-semibold">{{ Auth::user()->name }}</p>
                         </div>
                         <div class="w-[46px] h-[46px]">
                             <img src="{{ asset('images/photos/default-photo.svg') }}" alt="photo">
@@ -193,13 +194,13 @@
                                 <div class="w-6 h-6 flex shrink-0">
                                     <img src="{{ asset('images/icons/profile-2user-outline.svg') }}" alt="icon">
                                 </div>
-                                <p class="font-semibold">{{ count($students) }} students</p>
+                                <p class="font-semibold">{{ $course->students()->count() }} students</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="relative">
-                    <a href="add-student.html"
+                    <a href="{{ route('dashboard.course.course_students.create', $course) }}"
                         class="h-[52px] p-[14px_30px] bg-[#6436F1] rounded-full font-bold text-white transition-all duration-300 hover:shadow-[0_4px_15px_0_#6436F14D]">Add
                         Student</a>
                 </div>
@@ -221,17 +222,35 @@
                                     <p class="text-[#7F8190]">{{ $student->email }}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-[14px]">
-                                <p
-                                    class="p-[6px_10px] rounded-[10px] bg-[#06BC65] font-bold text-xs text-white outline-[#06BC65] outline-dashed outline-[2px] outline-offset-[4px] mr-[6px]">
-                                    Passed</p>
-                            </div>
+
+                            @if ($student->status == 'Passed')
+                                <div class="flex items-center gap-[14px]">
+                                    <p
+                                        class="p-[6px_10px] rounded-[10px] bg-[#06BC65] font-bold text-xs text-white outline-[#06BC65] outline-dashed outline-[2px] outline-offset-[4px] mr-[6px]">
+                                        Passed
+                                    </p>
+                                </div>
+                            @elseif($student->status == 'Not Started')
+                                <div class="flex items-center gap-[14px]">
+                                    <p
+                                        class="p-[6px_10px] rounded-[10px] bg-[#FF8A00] font-bold text-xs text-white outline-[#FF8A00] outline-dashed outline-[2px] outline-offset-[4px] mr-[6px]">
+                                        Not Started
+                                    </p>
+                                </div>
+                            @elseif($student->status == 'Not Passed')
+                                <div class="flex items-center gap-[14px]">
+                                    <p
+                                        class="p-[6px_10px] rounded-[10px] bg-[#FD445E] font-bold text-xs text-white outline-[#FD445E] outline-dashed outline-[2px] outline-offset-[4px] mr-[6px]">
+                                        Not Passed
+                                    </p>
+                                </div>
+                            @endif
+
                         </div>
                     @empty
-                        <div class="flex flex-col items-center justify-center py-12 px-4 text-center">
-                            <p class="text-[#7F8190] max-w-md mx-auto">Tidak ada siswa!</p>
-                        </div>
+                        <p class="text-center text-[#7F8190]">No students found</p>
                     @endforelse
+
 
                 </div>
             </div>
